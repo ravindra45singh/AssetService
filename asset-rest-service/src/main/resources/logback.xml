@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="false" scan="true" scanPeriod="15 seconds">
+
+	<appender name="consoleAppender" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<charset>UTF-8</charset>
+			<pattern>%d{yyyyMMdd-HHmmss.SSS};${HOSTNAME};%C{0};%thread;%mdc{req_id};%.-1level;%msg;%n
+			</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="FILE"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>/tmp/%d{yyyyMMdd}_asset_rest_service.log
+			</fileNamePattern>
+			<!-- keep xx days' worth of history -->
+			<maxHistory>15</maxHistory>
+		</rollingPolicy>
+
+		<encoder>
+			<charset>UTF-8</charset>
+			<pattern>%d{yyyyMMdd-HHmmss.SSS};${HOSTNAME};%C{0};%thread;%mdc{req_id};%.-1level;%msg;%n
+			</pattern>
+		</encoder>
+	</appender>
+
+	<logger name="de.telekom" level="DEBUG" />
+	<logger name="org.springframework" level="INFO" />
+
+	<root level="INFO">
+		<!-- <appender-ref ref="consoleAppender" /> -->
+		<appender-ref ref="FILE" />
+	</root>
+
+</configuration>
