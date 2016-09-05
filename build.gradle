@@ -23,4 +23,5 @@ repositories {
 dependencies {
     compile("org.springframework.boot:spring-boot-starter-web")
     compile("ch.qos.logback:logback-classic:1.+")
+    compile("com.fasterxml.jackson.core:jackson-databind:2.6.5")
 }
