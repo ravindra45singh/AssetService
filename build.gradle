@@ -13,7 +13,7 @@ apply plugin: 'spring-boot'
 
 jar {
     baseName = 'asset-service'
-    version = '0.1.0'
+    version = '1.0.0'
 }
 
 repositories {
@@ -25,3 +25,4 @@ dependencies {
     compile("ch.qos.logback:logback-classic:1.+")
     compile("com.fasterxml.jackson.core:jackson-databind:2.6.5")
 }
+task wrapper(type: Wrapper) { gradleVersion = '2.2.1' }
