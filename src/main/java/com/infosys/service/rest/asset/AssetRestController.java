@@ -29,7 +29,7 @@ public class AssetRestController {
 
     @RequestMapping( value = "/app/test/getMethod/{location}", method = RequestMethod.GET, produces = "application/json" )
     public @ResponseBody ResponseEntity<String> getAssetDetails( @PathVariable String location ) throws IOException {
-    	LOGGER.info("0;getAssetDetails method called");
+    	LOGGER.info("0;getAssetDetails rest method called");
         System.out.println( "getPath ::" + getPath );
         System.out.println( "location ::" + location );
         LOGGER.info("0;getPath : {} ",getPath);
