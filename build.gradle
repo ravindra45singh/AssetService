@@ -20,6 +20,23 @@ repositories {
     mavenCentral()
 }
 
+task printAsset(dependsOn: build) {
+    doLast {
+        println '\n------ printAsset Task doLast Executed Successfully ---------'      
+    }
+    doFirst {
+        println '\n------ printAsset Task doFirst Executed Successfully ---------'      
+    }
+}
+
+task dependAsset(dependsOn: printAsset) << {
+    println '\n------ dependAsset Task Executed Successfully ---------'
+}
+
+dependAsset.doLast {
+    println '\n------ dependAsset Task doLast Executed Successfully ---------'
+}
+
 dependencies {
     compile("org.springframework.boot:spring-boot-starter-web")
     compile("ch.qos.logback:logback-classic:1.+")
