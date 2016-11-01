@@ -12,40 +12,56 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.infosys.service.dao.AssetDao;
+import com.infosys.service.model.Cities;
+import com.infosys.service.model.Countries;
+import com.mysql.fabric.xmlrpc.base.Array;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 @RestController
 public class AssetRestController {
-    
-    @Value( "${iris.smdp.simulator.response.file}" )
-    private String getPath;
-    
+
+    @Autowired
+    AssetDao assetDao;
+
     private static final Logger LOGGER = LoggerFactory.getLogger( AssetRestController.class );
 
-    @RequestMapping( value = "/app/test/getMethod/{location}", method = RequestMethod.GET, produces = "application/json" )
-    public @ResponseBody ResponseEntity<String> getAssetDetails( @PathVariable String location ) throws IOException {
-    	LOGGER.info("0;getAssetDetails rest method invoked");
-        System.out.println( "getPath ::" + getPath );
-        System.out.println( "location ::" + location );
-        LOGGER.info("0;getPath : {} ",getPath);
-        LOGGER.info("0;location : {} ",location);
+    @RequestMapping( value = "/app/test/getCapital/{country}", method = RequestMethod.GET, produces = "application/json" )
+    public @ResponseBody ResponseEntity<String> getAssetDetails( @PathVariable String country ) throws IOException {
+        LOGGER.info( "0;getCapital rest method invoked" );
 
-        return new ResponseEntity<String>( "Successfully Executed", HttpStatus.OK );
+        LOGGER.info( "0;Country : {} ", country );
+        Countries count = assetDao.getCapital( country );
+        String response = "Capital of " + country + " is " + count.getCapital();
+        LOGGER.info( "0;Capital : {} ", count.getCapital() );
+        return new ResponseEntity<String>( response, HttpStatus.OK );
     }
 
-    @RequestMapping( value = "/app/test/postMethod", method = RequestMethod.POST, produces = "application/json" )
-    public ResponseEntity<String> loadAssetDetails( @RequestBody String request ) throws JsonParseException, JsonMappingException, IOException {
-    	ObjectMapper objectMapper = new ObjectMapper();
-    	LOGGER.info("0;loadAssetDetails method called");
-    	RequestBean  bean = new RequestBean();
-    	bean = objectMapper.readValue( request, RequestBean.class );
-    	LOGGER.info("0;Content in request is : {} ",bean.getAssetId());
-        return new ResponseEntity<String>( "Successfully Loaded", HttpStatus.OK );
+    @RequestMapping( value = "/app/test/getCities", method = RequestMethod.POST, consumes = "application/json", produces = "application/json" )
+    public ResponseEntity<String> loadAssetDetails( @RequestBody String request )
+            throws JsonParseException, JsonMappingException, IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        LOGGER.info( "0;getCities method called" );
+        Countries bean = new Countries();
+        bean = objectMapper.readValue( request, Countries.class );
+        LOGGER.info( "0;Countries in request is : {} ", bean.getCountry() );
+        List<Cities> cities = assetDao.getCities( bean.getCountry() );
+        StringBuilder sb = new StringBuilder();
+        for ( Cities city : cities ) {
+            if ( sb.length() != 0 )
+                sb.append( "," );
+            sb.append( city.getCity() );
+        }
+        String response = "Cities of " + bean.getCountry() + " are " + sb;
+        return new ResponseEntity<String>( response, HttpStatus.OK );
     }
 
 }
