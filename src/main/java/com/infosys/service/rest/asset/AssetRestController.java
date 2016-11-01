@@ -31,14 +31,20 @@ public class AssetRestController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger( AssetRestController.class );
 
+    String response;
+
     @RequestMapping( value = "/app/test/getCapital/{country}", method = RequestMethod.GET, produces = "application/json" )
     public @ResponseBody ResponseEntity<String> getAssetDetails( @PathVariable String country ) throws IOException {
         LOGGER.info( "0;getCapital rest method invoked" );
-
         LOGGER.info( "0;Country : {} ", country );
+
         Countries count = assetDao.getCapital( country );
-        String response = "Capital of " + country + " is " + count.getCapital();
-        LOGGER.info( "0;Capital : {} ", count.getCapital() );
+        if ( count != null )
+            response = "Capital of " + country + " is " + count.getCapital();
+        else
+            response = "Capital of " + country + " is not in database ";
+
+        LOGGER.info( "0;response : {} ", response );
         return new ResponseEntity<String>( response, HttpStatus.OK );
     }
 
@@ -47,17 +53,25 @@ public class AssetRestController {
             throws JsonParseException, JsonMappingException, IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         LOGGER.info( "0;getCities method called" );
+
         Countries bean = new Countries();
         bean = objectMapper.readValue( request, Countries.class );
         LOGGER.info( "0;Countries in request is : {} ", bean.getCountry() );
+
         List<Cities> cities = assetDao.getCities( bean.getCountry() );
-        StringBuilder sb = new StringBuilder();
-        for ( Cities city : cities ) {
-            if ( sb.length() != 0 )
-                sb.append( "," );
-            sb.append( city.getCity() );
+        if ( cities != null && cities.size() > 0 ) {
+            StringBuilder sb = new StringBuilder();
+            for ( Cities city : cities ) {
+                if ( sb.length() != 0 )
+                    sb.append( "," );
+                sb.append( city.getCity() );
+            }
+            response = "Cities of " + bean.getCountry() + " are " + sb;
+        } else {
+            response = "Cities of " + bean.getCountry() + " is not in database ";
         }
-        String response = "Cities of " + bean.getCountry() + " are " + sb;
+
+        LOGGER.info( "0;response : {} ", response );
         return new ResponseEntity<String>( response, HttpStatus.OK );
     }
 
