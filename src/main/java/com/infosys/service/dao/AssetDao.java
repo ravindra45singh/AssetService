@@ -21,7 +21,7 @@ public class AssetDao {
 
     @SuppressWarnings( "unchecked" )
     public Countries getCapital( String country ) {
-        String queryString = "from Countries c where c.country = ?";
+        String queryString = "from Countries c where c.country like ?";
         List<Countries> count = (ArrayList<Countries>) hibernateTemplate.find( queryString, country );
         return count.size() > 0 ? (Countries) count.get( 0 ) : null;
     }
@@ -31,7 +31,7 @@ public class AssetDao {
         Session session = hibernateTemplate.getSessionFactory().openSession();
         Criteria criteria = session.createCriteria( Cities.class, "cit" );
 
-        List<Cities> cities = criteria.createAlias( "cit.countryId", "count" ).add( Restrictions.eq( "count.country", country ) )
+        List<Cities> cities = criteria.createAlias( "cit.countryId", "count" ).add( Restrictions.ilike( "count.country", country ) )
                 .list();
         return cities.size() > 0 ? (ArrayList<Cities>) cities : null;
 
