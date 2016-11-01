@@ -6,12 +6,9 @@ import org.springframework.boot.Banner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.orm.jpa.EntityScan;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-
-import com.infosys.service.rest.asset.AssetRestController;
 
 @SpringBootApplication
 @EnableAutoConfiguration
@@ -24,7 +21,7 @@ public class AssetApplication {
 
     public static void main( String[] args ) {
         SpringApplication app = new SpringApplication( AssetApplication.class );
-        app.setBannerMode( Banner.Mode.LOG );
+        app.setBannerMode( Banner.Mode.CONSOLE );
         app.run( args );
         System.out.println( "Asset Application started" );
         LOGGER.info( "o;***** Asset Application started *****" );
