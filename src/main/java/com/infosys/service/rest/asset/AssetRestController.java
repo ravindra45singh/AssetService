@@ -15,9 +15,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.infosys.service.dao.AssetDao;
 import com.infosys.service.model.Cities;
 import com.infosys.service.model.Countries;
+import com.infosys.service.model.CountryDetails;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,6 +72,45 @@ public class AssetRestController {
             response = "Cities of " + bean.getCountry() + " are " + sb;
         } else {
             response = "Cities of " + bean.getCountry() + " is not in database ";
+        }
+
+        LOGGER.info( "0;response : {} ", response );
+        return new ResponseEntity<String>( response, HttpStatus.OK );
+    }
+
+    @RequestMapping( value = "/app/test/saveFile", method = RequestMethod.POST, consumes = "application/json", produces = "application/json" )
+    public ResponseEntity<String> saveFile( @RequestBody String request )
+            throws JsonParseException, JsonMappingException, IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        LOGGER.info( "0;saveFile method called" );
+
+        CountryDetails countryDetails = objectMapper.readValue( request, CountryDetails.class );
+        
+        if ( countryDetails != null ) {
+            System.out.println( "isCountryExist: " + assetDao.isCountryExist( countryDetails.getCountry() ) );
+            if ( !assetDao.isCountryExist( countryDetails.getCountry() ) ) {
+                Countries count = new Countries();
+
+                count.setCountry( countryDetails.getCountry() );
+                count.setCapital( countryDetails.getCapital() );
+                
+                Set<Cities> cities = new HashSet<>();
+                Cities cit;
+                for ( String st : countryDetails.getCities() ) {
+                    cit = new Cities();
+                    cit.setCity( st );
+                    cit.setCountryId( count );
+                    assetDao.saveCities( cit );                   
+                    cities.add( cit );
+                    cit = null;
+                }
+                count.setCities( cities );
+                assetDao.saveCountry( count );
+                response = "Country  " + countryDetails.getCountry() + " and their cities saved successfully in database ";
+
+            }else{
+                response = "Country  " + countryDetails.getCountry() + " already exist in database ";
+            }
         }
 
         LOGGER.info( "0;response : {} ", response );

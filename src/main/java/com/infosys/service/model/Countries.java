@@ -15,7 +15,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 @Entity
-@Table( name = "Countries" )
+@Table( name = "countries" )
 @JsonInclude( Include.NON_NULL )
 public class Countries implements Serializable {
 
@@ -52,7 +52,7 @@ public class Countries implements Serializable {
         this.capital = capital;
     }
 
-    @OneToMany( mappedBy = "countryId", cascade = CascadeType.ALL )
+    @OneToMany( mappedBy = "countryId",targetEntity = Cities.class, cascade = CascadeType.ALL )
     public Set<Cities> getCities() {
         return cities;
     }

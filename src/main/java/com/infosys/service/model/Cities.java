@@ -1,5 +1,7 @@
 package com.infosys.service.model;
 
+import java.io.Serializable;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,8 +12,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table( name = "Cities" )
-public class Cities {
+@Table( name = "cities" )
+public class Cities implements Serializable {
+    
+    private static final long serialVersionUID = 4336453529360581815L;
 
     private int cityId;
     private String city;
