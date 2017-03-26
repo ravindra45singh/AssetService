@@ -30,20 +30,6 @@ task printAsset(dependsOn: build) {
     }
 }
 
-task dependAsset(dependsOn: printAsset) << {
-    println '\n------ dependAsset Task Executed Successfully ---------'
-}
-
-dependAsset.doLast {
-    println '\n------ dependAsset Task doLast Executed Successfully ---------'
-}
-
-task mustRunAsset << {
-    println '\n------ mustRunAsset Task Executed Successfully ---------'
-}
-
-mustRunAsset.mustRunAfter dependAsset
-
 dependencies {
     compile("org.springframework.boot:spring-boot-starter-web")
     compile("ch.qos.logback:logback-classic:1.+")

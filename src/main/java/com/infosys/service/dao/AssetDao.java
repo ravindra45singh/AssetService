@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.infosys.service.model.Cities;
 import com.infosys.service.model.Countries;
-import com.infosys.service.rest.asset.AssetRestController;
 
 @Transactional
 public class AssetDao {
