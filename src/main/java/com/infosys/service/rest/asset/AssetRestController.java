@@ -38,8 +38,8 @@ public class AssetRestController {
 
     @RequestMapping( value = "/app/test/getCapital/{country}", method = RequestMethod.GET, produces = "application/json" )
     public @ResponseBody ResponseEntity<String> getAssetDetails( @PathVariable String country ) throws IOException {
-        LOGGER.info( "0;getCapital rest method invoked" );
-        LOGGER.info( "0;Country : {} ", country );
+        LOGGER.info( "1;getCapital rest method invoked" );
+        LOGGER.info( "2;Country in the getCapital request is : {} ", country );
 
         Countries count = assetDao.getCapital( country );
         if ( count != null )
@@ -47,7 +47,7 @@ public class AssetRestController {
         else
             response = "Capital of " + country + " is not in database ";
 
-        LOGGER.info( "0;response : {} ", response );
+        LOGGER.info( "6;response of getCapital is : {} ", response );
         return new ResponseEntity<String>( response, HttpStatus.OK );
     }
 
@@ -85,7 +85,7 @@ public class AssetRestController {
         LOGGER.info( "0;saveFile method called" );
 
         CountryDetails countryDetails = objectMapper.readValue( request, CountryDetails.class );
-        
+
         if ( countryDetails != null ) {
             System.out.println( "isCountryExist: " + assetDao.isCountryExist( countryDetails.getCountry() ) );
             if ( !assetDao.isCountryExist( countryDetails.getCountry() ) ) {
@@ -93,14 +93,14 @@ public class AssetRestController {
 
                 count.setCountry( countryDetails.getCountry() );
                 count.setCapital( countryDetails.getCapital() );
-                
+
                 Set<Cities> cities = new HashSet<>();
                 Cities cit;
                 for ( String st : countryDetails.getCities() ) {
                     cit = new Cities();
                     cit.setCity( st );
                     cit.setCountryId( count );
-                    assetDao.saveCities( cit );                   
+                    assetDao.saveCities( cit );
                     cities.add( cit );
                     cit = null;
                 }
@@ -108,7 +108,7 @@ public class AssetRestController {
                 assetDao.saveCountry( count );
                 response = "Country  " + countryDetails.getCountry() + " and their cities saved successfully in database ";
 
-            }else{
+            } else {
                 response = "Country  " + countryDetails.getCountry() + " already exist in database ";
             }
         }

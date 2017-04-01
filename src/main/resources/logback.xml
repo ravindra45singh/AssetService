@@ -25,7 +25,7 @@
 		</encoder>
 	</appender>
 
-	<logger name="de.telekom" level="DEBUG" />
+	<logger name="com.infosys" level="DEBUG" />	
 	<logger name="org.springframework" level="INFO" />
 
 	<root level="INFO">
