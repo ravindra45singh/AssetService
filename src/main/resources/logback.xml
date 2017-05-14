@@ -12,7 +12,7 @@
 	<appender name="FILE"
 		class="ch.qos.logback.core.rolling.RollingFileAppender">
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-			<fileNamePattern>E:\logs\%d{yyyyMMdd}_asset_service.log
+			<fileNamePattern>/tmp/%d{yyyyMMdd}_asset_service.log
 			</fileNamePattern>
 			<!-- keep xx days' worth of history -->
 			<maxHistory>15</maxHistory>

@@ -4,13 +4,19 @@ buildscript {
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:1.3.2.RELEASE")
+        classpath("se.transmode.gradle:gradle-docker:1.2")
         classpath("mysql:mysql-connector-java:5.+")
+        classpath("com.netflix.nebula:gradle-ospackage-plugin:2.2.0")
+        classpath("se.transmode.gradle:gradle-docker:1.2")
     }
 }
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'base'
 apply plugin: 'spring-boot'
+apply plugin: 'docker'
+apply plugin: 'os-package'
+
 
 jar {
     baseName = 'asset-service'
@@ -21,23 +27,42 @@ repositories {
     mavenCentral()
 }
 
-task printAsset(dependsOn: build) {
-    doLast {
-        println '\n------ printAsset Task doLast Executed Successfully ---------'      
-    }
-    doFirst {
-        println '\n------ printAsset Task doFirst Executed Successfully ---------'      
-    }
-}
-
 dependencies {
     compile("org.springframework.boot:spring-boot-starter-web")
     compile("ch.qos.logback:logback-classic:1.+")
     compile("com.fasterxml.jackson.core:jackson-databind:2.6.5")
-    compile("mysql:mysql-connector-java:5.+")
     compile("org.springframework.boot:spring-boot-starter-data-jpa:1.1.4.RELEASE")
     compile("org.hibernate:hibernate-core:4.3.6.Final")
     compile("commons-dbcp:commons-dbcp:1.4")
+    compile("mysql:mysql-connector-java:5.+")
     
 }
+
+task packageRpm(type: Rpm, dependsOn: build) {
+	packageName = jar.baseName
+	packageDescription = 'Asset Service'
+	version = jar.version
+	release = '1'
+	os = LINUX
+	arch = NOARCH
+	type = SOURCE
+	user 'root'
+	permissionGroup 'root'
+
+	into "src/main/rpm/${jar.baseName}"
+
+	from("build/libs/${jar.baseName}-${jar.version}.jar") {
+	    into 'lib'
+        fileMode = 0755
+	}
+}
+
+task buildDocker(type: Docker, dependsOn: build) {
+    push = false
+    applicationName = jar.baseName
+    addFile("${jar.baseName}-${jar.version}.jar", "app.jar")
+    dockerfile = file('src/main/docker/Dockerfile')
+   
+}
+
 task wrapper(type: Wrapper) { gradleVersion = '2.2.1' }
