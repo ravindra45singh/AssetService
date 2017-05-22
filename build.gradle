@@ -49,9 +49,9 @@ task packageRpm(type: Rpm, dependsOn: build) {
 	user 'root'
 	permissionGroup 'root'
 
-	into "src/main/rpm/${jar.baseName}"
+	into "apple/ball/${jar.baseName}"
 
-	from("build/libs/${jar.baseName}-${jar.version}.jar") {
+	from("build/libs/${jar.baseName}-docker.tar") {
 	    into 'lib'
         fileMode = 0755
 	}
@@ -60,9 +60,16 @@ task packageRpm(type: Rpm, dependsOn: build) {
 task buildDocker(type: Docker, dependsOn: build) {
     push = false
     applicationName = jar.baseName
-    addFile("${jar.baseName}-${jar.version}.jar", "app.jar")
+    tagVersion = jar.version
+    addFile("build/libs/${jar.baseName}-${jar.version}.jar", "app.jar")
     dockerfile = file('src/main/docker/Dockerfile')
-   
+    
+   doLast{
+        exec {
+            executable "sh"
+            args "-c","docker save -o ./build/libs/${jar.baseName}-docker.tar ${jar.baseName}"
+        }
+    }
 }
 
 task wrapper(type: Wrapper) { gradleVersion = '2.2.1' }
